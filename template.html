@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>평안투 · US Treasury Regime Risk Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23C34A32'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' fill='%23FAF9F5'%3E%E5%B9%B3%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --card:#FFFDF8; --card2:#F7F3EC; --line:#E6DFD8; --line2:#CFC8BC;
+  --ink:#171511; --text:#403A33; --muted:#6C6A64; --brand:#C34A32; --link:#943421;
+  --green:#2E7D54; --yellow:#B07F1E; --orange:#C36A21; --red:#B33A3A;
+  --shadow:0 1px 2px rgba(23,21,17,.05),0 8px 28px rgba(23,21,17,.07);
+  --radius:14px; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Noto Sans KR",-apple-system,sans-serif;background:var(--bg);color:var(--ink);
+  background-image:radial-gradient(1000px 420px at 85% -8%,rgba(195,74,50,.06),transparent 60%)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px 72px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:24px 0 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.brand > div{min-width:0;flex:1}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#C34A32,#A9583E);color:#FAF9F5;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:18px}
+.brand h1{font-family:"Noto Serif KR",Georgia,serif;font-size:20px;letter-spacing:-.03em}
+.brand .sub{font-size:12.5px;color:var(--muted);margin-top:2px;max-width:46rem;overflow-wrap:anywhere;word-break:keep-all}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-size:12px;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 12px;color:var(--text)}
+.pill b{font-family:var(--mono)}
+.hero{margin:22px 0;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);font-weight:600}
+.hero h2{font-family:"Noto Serif KR",Georgia,serif;font-size:clamp(22px,5.4vw,40px);letter-spacing:-.04em;margin:8px 0 6px;line-height:1.2;overflow-wrap:anywhere;word-break:keep-all}
+.hero .lead{color:var(--text);max-width:800px;line-height:1.7;font-size:15.5px;overflow-wrap:anywhere;word-break:keep-all}
+.hero-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:12px;margin-top:20px}
+.stat{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat .k{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.stat .v{font-family:var(--mono);font-size:26px;font-weight:600;margin-top:6px;letter-spacing:-.04em}
+.stat .d{font-size:12.5px;color:var(--text);margin-top:4px;line-height:1.45}
+.tone-green{color:var(--green)} .tone-yellow{color:var(--yellow)} .tone-orange{color:var(--orange)} .tone-red{color:var(--red)}
+.interp{margin-top:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.interp div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+.interp .k{font-size:10.5px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;font-weight:700}
+.interp .v{font-size:13.5px;margin-top:4px;font-weight:700;line-height:1.45}
+.chain{margin:8px 0 22px;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.02em;line-height:1.7;display:flex;flex-wrap:wrap;gap:2px 8px}
+.layer{margin:28px 0 10px}
+.layer h3{font-family:"Noto Serif KR",Georgia,serif;font-size:22px;letter-spacing:-.03em}
+.layer p{color:var(--muted);font-size:13.5px;margin-top:4px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px}
+.card button{all:unset;cursor:pointer;display:block;width:100%}
+.card .en{font-size:12px;color:var(--muted)}
+.card h4{font-size:16px;margin:4px 0 10px;letter-spacing:-.02em}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.metrics span{display:block;font-size:12px;color:var(--muted)}
+.metrics b{display:block;font-family:var(--mono);font-size:15px;color:var(--ink);margin-top:2px}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;margin-left:6px}
+.q-VALID{background:#e4f3ea;color:var(--green)} .q-ESTIMATED,.q-STALE{background:#f7ecd3;color:var(--yellow)}
+.q-MISSING,.q-SOURCE_ERROR,.q-METHODOLOGY_CHANGED{background:#f8e4e0;color:var(--red)}
+.detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;line-height:1.65;color:var(--text)}
+.card.open .detail{display:block}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px 10px;margin:14px 0}
+.chart h3{font-size:16px}
+.chart .hint{font-size:12.5px;color:var(--muted);margin:4px 0 8px;line-height:1.5}
+svg.plot{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--text);padding:4px 0 8px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:5px}
+.note{font-size:13px;color:var(--text);background:var(--card2);border:1px dashed var(--line2);border-radius:12px;padding:14px 16px;margin:18px 0;line-height:1.7}
+.answers{display:grid;gap:10px;margin:18px 0}
+.answers article{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.answers h4{font-size:14px;margin-bottom:6px}
+.answers p{font-size:13.5px;color:var(--text);line-height:1.65}
+table{width:100%;border-collapse:collapse;font-size:13px}
+.table-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;white-space:nowrap}
+th{font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.matrix-label{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);line-height:1.65}
+a{color:var(--link)}
+html,body{overflow-x:hidden}
+.brand h1,.brand .sub,.card h4,.card .en{overflow-wrap:anywhere;word-break:keep-all}
+@media(max-width:900px){.hero-grid,.interp,.cards{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){
+  .wrap{padding:0 12px 56px}
+  header{display:block;padding-top:18px}
+  .brand{width:100%;align-items:flex-start}
+  .brand h1{font-size:20px;word-break:normal;overflow-wrap:normal}
+  .brand .sub{word-break:keep-all;overflow-wrap:break-word;max-width:none}
+  .pills{margin-top:12px;width:100%}
+  .hero-grid,.interp,.cards{grid-template-columns:1fr}
+  .stat .v{font-size:22px}
+  .hero{padding:16px 14px}
+}
+@media(max-width:390px){
+  .wrap{padding-left:10px;padding-right:10px}
+  .hero,.card,.chart{border-radius:10px}
+  .brand h1{font-size:18px}
+  .metrics{grid-template-columns:1fr}
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#151412;--card:#1E1C19;--card2:#25221E;--line:#3A3630;--line2:#555047;--ink:#F5F0E8;--text:#D8D0C5;--muted:#AAA196;--link:#F1A28E;--shadow:none}
+  body{background-image:radial-gradient(1000px 420px at 85% -8%,rgba(195,74,50,.12),transparent 60%)}
+  .interp div{background:#211F1C}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <div class="logo">평</div>
+    <div>
+      <h1>US Treasury Regime Risk</h1>
+      <div class="sub">10년물을 숫자로 끝내지 않습니다. 정책 기대 · 인플레 기대 · 실질금리 · 텀프리미엄을 분해합니다</div>
+    </div>
+  </div>
+  <div class="pills">
+    <div class="pill">기준 <b id="asof">—</b></div>
+    <div class="pill">신뢰도 <b id="conf">—</b></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="kicker">US TREASURY REGIME RISK</div>
+  <h2 id="regime-title">Treasury Regime Risk Score</h2>
+  <p class="lead" id="lead">명목 10년물 = 기대 단기금리 + 텀프리미엄. 동시에 명목 ≈ 실질 + BEI. 레벨뿐 아니라 변화 속도와 가속을 봅니다.</p>
+  <div class="hero-grid">
+    <div class="stat"><div class="k">TRRS</div><div class="v" id="trrs">—</div><div class="d" id="status">—</div></div>
+    <div class="stat"><div class="k">Rate Stress</div><div class="v" id="rs">—</div><div class="d">실질 · BEI · 정책금리</div></div>
+    <div class="stat"><div class="k">Term Premium Stress</div><div class="v" id="tps">—</div><div class="d" id="tpstate">—</div></div>
+    <div class="stat"><div class="k">Fiscal Confidence</div><div class="v" id="fs">—</div><div class="d">적자 · 국채 공급</div></div>
+  </div>
+  <div class="interp" id="interp"></div>
+</section>
+<p class="chain"><span>Nominal 10Y</span><span>→ Expected short rates</span><span>+ Term premium</span><span>→ Real + BEI</span><span>→ Fiscal supply</span><span>→ Credit / equity transmission</span></p>
+
+<section class="answers" id="answers"></section>
+
+<section class="layer">
+  <h3>TOP KPI</h3><p>5초 안에 레벨·변화·퍼센타일·신호·기준일을 확인합니다.</p>
+  <div class="cards" id="top-kpis"></div>
+</section>
+
+<section class="chart">
+  <h3>Regime Matrix · 현재 위치</h3>
+  <p class="hint">X축은 성장/기대금리 압력, Y축은 텀프리미엄/재정 압력입니다.</p>
+  <div id="regime-matrix"></div>
+</section>
+
+<div id="layers"></div>
+
+<section class="chart">
+  <h3>Chart 1 · 10Y = Expected Short Rates + Term Premium</h3>
+  <p class="hint">Expected Short Rates는 독립 시장 시계열이 아니라 명목 10년물에서 ACM 텀프리미엄을 뺀 모델 잔차입니다.</p>
+  <div class="legend"><span><i style="background:#171511"></i>Nominal 10Y</span><span><i style="background:#2F6FB0"></i>Expected-short residual</span><span><i style="background:#C34A32"></i>ACM TP</span></div>
+  <div id="chart-short-tp"></div>
+</section>
+
+<section class="chart">
+  <h3>Chart 2 · TRRS 역사와 미국 경기침체</h3>
+  <p class="hint">회색 띠는 NBER 경기침체. 점수는 2000년 이후 expanding percentile이라 미래 값을 보지 않습니다.</p>
+  <div id="chart-trrs"></div>
+</section>
+<section class="chart">
+  <h3>Chart 2 · 명목 10년 · 실질 · BEI</h3>
+  <p class="hint">세 선을 같이 보면 금리 상승이 성장(실질)인지 인플레(BEI)인지 갈립니다.</p>
+  <div class="legend"><span><i style="background:#171511"></i>Nominal 10Y</span><span><i style="background:#C34A32"></i>Real 10Y</span><span><i style="background:#2F6FB0"></i>10Y BEI</span></div>
+  <div id="chart-decomp"></div>
+</section>
+<section class="chart">
+  <h3>Chart 3 · Term Premium 모델 비교</h3>
+  <p class="hint">실선은 NY Fed ACM(대표). 점선은 Kim-Wright. 둘 다 추정치이며 공란이면 해당 모델을 만들지 않은 것입니다.</p>
+  <div class="legend"><span><i style="background:#C34A32"></i>ACM TP10</span><span><i style="background:#2F6FB0;opacity:.8"></i>Kim-Wright TP10</span></div>
+  <div id="chart-tp"></div>
+</section>
+<section class="chart">
+  <h3>Chart 4 · 전염 · 하이일드와 나스닥</h3>
+  <p class="hint">국채 스트레스가 신용·성장주로 번지는지만 봅니다. AI CapEx 분기 공시는 이 보드의 월간 KPI가 아닙니다.</p>
+  <div class="legend"><span><i style="background:#C34A32"></i>HY OAS</span><span><i style="background:#2F6FB0"></i>Nasdaq</span></div>
+  <div id="chart-tx"></div>
+</section>
+
+<section class="chart">
+  <h3>Fiscal & Treasury Supply Pressure</h3>
+  <p class="hint">적자·이자부담·실제 낙찰 발행액·장기물 비중을 구분합니다. 순시장성 차입은 안정적 API가 없어 추정하지 않습니다.</p>
+  <div id="fiscal-panel"></div>
+</section>
+
+<section class="chart">
+  <h3>Treasury Auction Stress · 최근 3회/6회</h3>
+  <p class="hint">2Y·5Y·7Y·10Y·20Y·30Y. Bid-to-cover, indirect, dealer takedown을 봅니다. 공식 WI가 없어 auction tail은 공란입니다.</p>
+  <div class="table-scroll" id="auction-panel"></div>
+</section>
+
+<section class="chart">
+  <h3>Mechanical Term-Premium Backtest</h3>
+  <p class="hint">여러 shock 정의의 합집합. 63거래일 cooldown, 2000년 이후 expanding percentile로 이벤트를 잡습니다.</p>
+  <div class="table-scroll" id="backtest-panel"></div>
+</section>
+
+<div class="note" id="windows"></div>
+<div class="note" id="modelnote"></div>
+<footer>
+  출처: FRED DGS10, DFII10, T10YIE, FEDFUNDS, ACMTP10, THREEFYTP10, T10Y3M, FYFSGDA188S, GFDEBTN, BAMLH0A0HYM2, SP500, NASDAQCOM, USREC. 텀프리미엄은 모델 추정치입니다. 이 화면은 투자 자문이 아닙니다.
+  <br>텔레그램: <a href="https://t.me/signalandflow">https://t.me/signalandflow</a>
+</footer>
+</div>
+<script>window.__BOOT_ERRORS__=[];window.addEventListener('error',function(e){window.__BOOT_ERRORS__.push({message:e.message,source:e.filename,line:e.lineno,col:e.colno});});</script>
+<script>
+const DATA = __DATA_JSON__;
+const $ = id => document.getElementById(id);
+const fmt = (v, d=1) => (v==null || Number.isNaN(v)) ? "—" : Number(v).toFixed(d);
+const tone = c => ({green:"tone-green",yellow:"tone-yellow",orange:"tone-orange",red:"tone-red"}[c]||"");
+const H = DATA.hero || {};
+$("asof").textContent = DATA.meta.as_of_label || "—";
+$("conf").textContent = DATA.meta.data_confidence || "—";
+const trrsEl = $("trrs");
+trrsEl.textContent = H.trrs==null ? "—" : fmt(H.trrs,1) + " / 100";
+trrsEl.className = "v " + tone(H.color);
+$("status").textContent = "Status: " + (H.status||"—");
+$("rs").textContent = H.rate_stress==null ? "—" : fmt(H.rate_stress,0);
+$("tps").textContent = H.tp_stress==null ? "—" : fmt(H.tp_stress,0);
+$("fs").textContent = H.fiscal_stress==null ? "—" : fmt(H.fiscal_stress,0);
+$("tpstate").textContent = ((H.tp_state&&H.tp_state.state)||"—") + (H.tp_state&&H.tp_state.chg_3m!=null ? ` · 3M ${fmt(H.tp_state.chg_3m*100,0)}bp` : "");
+$("regime-title").textContent = (H.regime&&H.regime.regime) || "Treasury Regime Risk Score";
+const I = DATA.interpretation||{};
+const imap = [["Why 10Y",I.why_yields],["Split",I.fed_vs_inflation_vs_real_vs_tp],["TP structure",I.term_premium_structure],["Regime",I.regime]];
+$("interp").innerHTML = imap.map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${v||"—"}</div></div>`).join("");
+
+const Q = [
+  ["현재 장기금리가 왜 오르는가?", I.why_yields],
+  ["Fed 기대인가, 인플레 기대인가, 실질인가, 텀프리미엄인가?", I.fed_vs_inflation_vs_real_vs_tp],
+  ["텀프리미엄 안에서 구조 위험이 커지고 있는가?", I.term_premium_structure + " · " + (I.acceleration||"")],
+  ["재정적자·국채 공급이 구조적으로 밀어 올리는가?", I.fiscal_supply],
+  ["텀프리미엄이 가속 단계인가?", I.acceleration],
+  ["과거 급등 때 주식은?", "아래 구간 표. 사후 최적화가 아닌 사전 창입니다."],
+  ["2013형인가, 2023형인가, 재정 신뢰 쇼크인가?", (I.regime||"—") + " — " + (I.regime_note||"")],
+  ["S&P500·Nasdaq·AI 캡엑스에 영향을 줄 단계인가?", I.equity_ai]
+];
+$("answers").innerHTML = Q.map(([q,a])=>`<article><h4>${q}</h4><p>${a||"—"}</p></article>`).join("");
+
+const R=DATA.rate_structure||{}, TP=DATA.term_premium_analytics||{}, F=DATA.fiscal_supply||{}, A=DATA.auction||{};
+const sig = v => v==null ? "MISSING" : (v>=80?"SEVERE":v>=65?"STRESS":v>=45?"WARNING":v>=25?"ELEVATED":"NORMAL");
+const topKpis = [
+  ["10Y Treasury", R.us_10y, "%", null, DATA.meta.as_of_label, sig(H.rate_stress)],
+  ["10Y Real Yield", R.real_10y, "%", null, DATA.meta.as_of_label, sig(H.rate_stress)],
+  ["10Y Breakeven", R.breakeven_10y, "%", null, DATA.meta.as_of_label, sig(H.rate_stress)],
+  ["10Y Term Premium", TP.level, "%", TP.change_3m_bp, DATA.meta.as_of_label, TP.zone],
+  ["3M TP Change", TP.change_3m_bp, "bp", null, DATA.meta.as_of_label, TP.acceleration&&TP.acceleration.state],
+  ["MOVE", null, "", null, null, "MISSING · realized-vol proxy below"],
+  ["Treasury Supply", F.long_duration_issuance_yoy_pct, "% YoY", null, F.latest_issuance&&F.latest_issuance.period, sig(DATA.sub_scores&&DATA.sub_scores.fiscal&&DATA.sub_scores.fiscal.components.issuance_pressure)],
+  ["Auction Stress", DATA.sub_scores&&DATA.sub_scores.fiscal&&DATA.sub_scores.fiscal.components.auction_stress, "/100", null, A.latest_date, A.quality]
+];
+$("top-kpis").innerHTML=topKpis.map(x=>`<article class="card"><div class="en">${x[0]}</div><div class="v" style="font-family:var(--mono);font-size:24px;margin:7px 0">${x[1]==null?"—":fmt(x[1],2)+x[2]}</div><div class="metrics"><div><span>3M change</span><b>${x[3]==null?"—":fmt(x[3],0)+"bp"}</b></div><div><span>Signal</span><b>${x[5]||"—"}</b></div><div><span>Latest</span><b>${x[4]||"—"}</b></div><div><span>Percentile</span><b>${x[0].includes("Term Premium")&&TP.historical_percentile!=null?fmt(TP.historical_percentile,0)+"th":"—"}</b></div></div></article>`).join("");
+
+(function matrix(){
+  const x=Math.max(0,Math.min(100,H.rate_stress||0)), y=Math.max(0,Math.min(100,Math.max(H.tp_stress||0,H.fiscal_stress||0)));
+  const X=50+x*4.8, Y=530-y*4.8;
+  $("regime-matrix").innerHTML=`<svg class="plot" viewBox="0 0 580 580" role="img" aria-label="Treasury regime matrix">
+    <rect x="50" y="50" width="240" height="240" fill="#C34A32" opacity=".08"/><rect x="290" y="50" width="240" height="240" fill="#B33A3A" opacity=".12"/>
+    <rect x="50" y="290" width="240" height="240" fill="#2E7D54" opacity=".08"/><rect x="290" y="290" width="240" height="240" fill="#B07F1E" opacity=".09"/>
+    <line x1="290" x2="290" y1="50" y2="530" stroke="var(--line2)"/><line x1="50" x2="530" y1="290" y2="290" stroke="var(--line2)"/>
+    <text class="matrix-label" x="62" y="72">FISCAL / TERM PREMIUM SHOCK</text><text class="matrix-label" x="302" y="72">FULL RATE STRESS</text>
+    <text class="matrix-label" x="62" y="512">NORMAL</text><text class="matrix-label" x="302" y="512">GROWTH RATE SHOCK</text>
+    <circle cx="${X}" cy="${Y}" r="11" fill="#C34A32" stroke="var(--ink)" stroke-width="3"><title>${I.regime||"Current"}</title></circle>
+    <text class="matrix-label" x="290" y="565" text-anchor="middle">Growth / Expected-rate pressure →</text>
+    <text class="matrix-label" x="18" y="290" text-anchor="middle" transform="rotate(-90 18 290)">Term premium / Fiscal pressure →</text>
+  </svg>`;
+})();
+
+const latestIss=F.latest_issuance||{};
+$("fiscal-panel").innerHTML=`<div class="cards">
+  <article class="card"><div class="en">Deficit / GDP</div><div class="v">${F.budget_deficit_gdp==null?"—":fmt(F.budget_deficit_gdp,2)+"%"}</div></article>
+  <article class="card"><div class="en">Debt held by public</div><div class="v">${F.debt_held_public_usd==null?"—":"$"+fmt(F.debt_held_public_usd/1e12,2)+"T"}</div><div class="d">YoY ${F.debt_held_public_yoy_pct==null?"—":fmt(F.debt_held_public_yoy_pct,1)+"%"}</div></article>
+  <article class="card"><div class="en">Interest / Revenue</div><div class="v">${F.interest_revenue_pct==null?"—":fmt(F.interest_revenue_pct,1)+"%"}</div><div class="d">Interest / GDP ${F.interest_gdp_pct==null?"—":fmt(F.interest_gdp_pct,2)+"%"}</div></article>
+  <article class="card"><div class="en">Gross accepted issuance YoY</div><div class="v">${F.gross_issuance_yoy_pct==null?"—":fmt(F.gross_issuance_yoy_pct,1)+"%"}</div></article>
+  <article class="card"><div class="en">Coupon issuance YoY</div><div class="v">${F.coupon_issuance_yoy_pct==null?"—":fmt(F.coupon_issuance_yoy_pct,1)+"%"}</div></article>
+  <article class="card"><div class="en">Long-duration supply YoY</div><div class="v">${F.long_duration_issuance_yoy_pct==null?"—":fmt(F.long_duration_issuance_yoy_pct,1)+"%"}</div><div class="d">WAM ${latestIss.weighted_average_maturity_years==null?"—":fmt(latestIss.weighted_average_maturity_years,2)+"y"}</div></article>
+</div><div class="note">${F.notes||""}</div>`;
+const tenors=A.tenors||[];
+$("auction-panel").innerHTML=`<table><thead><tr><th>Tenor</th><th>Latest</th><th>High yield</th><th>BTC</th><th>Indirect</th><th>Dealer</th><th>3-auction BTC</th><th>6-auction BTC</th><th>Tail</th></tr></thead><tbody>${tenors.map(x=>`<tr><td>${x.tenor}</td><td>${x.latest.auction_date||"—"}</td><td>${fmt(x.latest.high_yield,3)}</td><td>${fmt(x.latest.bid_to_cover,2)}</td><td>${fmt(x.latest.indirect_pct,1)}%</td><td>${fmt(x.latest.dealer_pct,1)}%</td><td>${fmt(x.rolling_3.bid_to_cover,2)}</td><td>${fmt(x.rolling_6.bid_to_cover,2)}</td><td>—</td></tr>`).join("")}</tbody></table><p class="hint">Auction tail: official_free_source_unavailable. 전일 종가나 par curve로 대체하지 않았습니다.</p>`;
+const U=DATA.backtest&&DATA.backtest.definitions&&DATA.backtest.definitions.union;
+if(U){
+  $("backtest-panel").innerHTML=`<table><thead><tr><th>Horizon</th><th>SPX avg</th><th>median</th><th>win rate</th><th>max DD</th><th>p25</th><th>p75</th><th>n</th><th>Nasdaq avg</th></tr></thead><tbody>${Object.entries(U.horizons).map(([h,r])=>`<tr><td>${h}</td><td>${fmt(r.spx.average,1)}%</td><td>${fmt(r.spx.median,1)}%</td><td>${fmt(r.spx.win_rate,0)}%</td><td>${fmt(r.spx.max_drawdown,1)}%</td><td>${fmt(r.spx.p25,1)}%</td><td>${fmt(r.spx.p75,1)}%</td><td>${r.spx.sample_size}</td><td>${fmt(r.nasdaq.average,1)}%</td></tr>`).join("")}</tbody></table><p class="hint">event candidates ${U.sample_size}. Horizon별 실제 표본 수는 가격 데이터 가용성에 따라 줄어듭니다.</p>`;
+} else $("backtest-panel").textContent="백테스트 데이터가 없습니다.";
+
+const LAYER = {rate:["RATE DECOMPOSITION","명목 · 실질 · BEI · 정책금리"], term_premium:["TERM PREMIUM","모델 추정치. 레벨과 가속을 같이 본다"], fiscal:["FISCAL / SUPPLY","적자와 국채 잔액 증가"], transmission:["EQUITY / AI TRANSMISSION","신용 스프레드와 금리 변동성"]};
+const byL = {};
+for(const k of DATA.kpis){ (byL[k.layer]=byL[k.layer]||[]).push(k); }
+const layers = $("layers");
+for(const key of ["rate","term_premium","fiscal","transmission"]){
+  const spec = LAYER[key];
+  const ls = DATA.layers[key];
+  const sec = document.createElement("section");
+  sec.className = "layer";
+  sec.innerHTML = `<h3>${spec[0]}${ls!=null?` <span class="badge q-VALID">${fmt(ls,0)}</span>`:""}</h3><p>${spec[1]}</p>`;
+  const grid = document.createElement("div"); grid.className="cards";
+  for(const k of byL[key]||[]){
+    const card = document.createElement("article");
+    card.className="card";
+    const q = k.quality||"MISSING";
+    card.innerHTML = `<button type="button"><div class="en">${k.label_en}</div><h4>${k.label_ko}<span class="badge q-${q.replace(" ","")}">${q}</span></h4>
+      <div class="metrics">
+        <div><span>Current</span><b>${k.latest_value==null?"—":fmt(k.latest_value,2)+k.unit}</b></div>
+        <div><span>Previous</span><b>${k.previous_value==null?"—":fmt(k.previous_value,2)+k.unit}</b></div>
+        <div><span>1M / 3M</span><b>${k.chg_1m==null?"—":fmt(k.chg_1m,2)} / ${k.chg_3m==null?"—":fmt(k.chg_3m,2)}</b></div>
+        <div><span>Stress Score</span><b>${k.score==null?"—":fmt(k.score,0)}</b></div>
+        <div><span>Period</span><b>${k.latest_period||"—"}</b></div>
+        <div><span>Weight</span><b>${Math.round(k.weight*100)}%</b></div>
+      </div></button>
+      <div class="detail"><p>${k.interpretation}</p><p>${k.methodology}</p><p>Source: <a href="${k.source_url}" target="_blank" rel="noopener">${k.source}</a> · ${k.series_id}</p>
+      <div data-spark="${k.key}"></div></div>`;
+    card.querySelector("button").addEventListener("click",()=>card.classList.toggle("open"));
+    grid.appendChild(card);
+  }
+  sec.appendChild(grid); layers.appendChild(sec);
+}
+
+function lineChart(el, seriesList, recessions){
+  const w=1080,h=320,p={l:48,r:16,t:16,b:28};
+  const all=[]; seriesList.forEach(s=>s.pts.forEach(pt=>all.push(pt)));
+  if(!all.length){ el.innerHTML="<p class='hint'>표시할 시계열이 없습니다. 추정값을 만들지 않습니다.</p>"; return; }
+  const xs=all.map(d=>+new Date(d.d)), ys=all.map(d=>d.v);
+  const xmin=Math.min(...xs), xmax=Math.max(...xs);
+  let ymin=Math.min(...ys), ymax=Math.max(...ys); if(ymin===ymax){ymin-=1;ymax+=1;}
+  const pad=(ymax-ymin)*0.08; ymin-=pad; ymax+=pad;
+  const X=t=>p.l+(t-xmin)/(xmax-xmin||1)*(w-p.l-p.r);
+  const Y=v=>p.t+(1-(v-ymin)/(ymax-ymin||1))*(h-p.t-p.b);
+  let rec="";
+  (recessions||[]).forEach(r=>{
+    const x1=X(+new Date(r.start)), x2=X(+new Date(r.end));
+    rec+=`<rect x="${Math.min(x1,x2)}" y="${p.t}" width="${Math.max(2,Math.abs(x2-x1))}" height="${h-p.t-p.b}" fill="#171511" opacity=".06"/>`;
+  });
+  const paths=seriesList.map(s=>{
+    const d=s.pts.filter(pt=>pt.v!=null).map((pt,i)=>(i?"L":"M")+X(+new Date(pt.d)).toFixed(1)+" "+Y(pt.v).toFixed(1)).join(" ");
+    return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.width||2}" stroke-dasharray="${s.dash||""}" opacity="${s.op||1}"/>`;
+  }).join("");
+  let grid="";
+  for(let i=0;i<=5;i++){
+    const v=ymin+(ymax-ymin)*i/5, y=Y(v);
+    grid+=`<line x1="${p.l}" x2="${w-p.r}" y1="${y}" y2="${y}" stroke="#E6DFD8"/><text x="8" y="${y+4}" font-size="11" fill="#6C6A64" font-family="IBM Plex Mono">${v.toFixed(1)}</text>`;
+  }
+  const years=[...new Set(all.map(d=>d.d.slice(0,4)))].filter((y,i,a)=>i===0||i===a.length-1||y.endsWith("0")||y.endsWith("5"));
+  const xlab=years.map(y=>{
+    const pt=all.find(d=>d.d.startsWith(y)); if(!pt) return "";
+    return `<text x="${X(+new Date(pt.d))}" y="${h-6}" font-size="11" fill="#6C6A64" text-anchor="middle" font-family="IBM Plex Mono">${y}</text>`;
+  }).join("");
+  el.innerHTML=`<svg class="plot" viewBox="0 0 ${w} ${h}" role="img">${rec}${grid}${paths}${xlab}</svg>`;
+}
+
+const C = DATA.charts||{};
+lineChart($("chart-short-tp"), [
+  {pts:C.dgs10||[],color:"#171511",width:2.2},
+  {pts:C.expected_short||[],color:"#2F6FB0",width:2},
+  {pts:C.acm||[],color:"#C34A32",width:2}
+], C.recessions);
+lineChart($("chart-trrs"), [{pts:C.trrs||[],color:"#C34A32",width:2.4}], C.recessions);
+lineChart($("chart-decomp"), [
+  {pts:C.dgs10||[],color:"#171511",width:2.2},
+  {pts:C.real||[],color:"#C34A32",width:2},
+  {pts:C.bei||[],color:"#2F6FB0",width:2}
+], C.recessions);
+lineChart($("chart-tp"), [
+  {pts:C.acm||[],color:"#C34A32",width:2.3},
+  {pts:C.kim_wright||[],color:"#2F6FB0",width:2,dash:"5 4",op:.8}
+], C.recessions);
+lineChart($("chart-tx"), [
+  {pts:C.hy||[],color:"#C34A32",width:2.2},
+  {pts:C.nasdaq||[],color:"#2F6FB0",width:1.8,op:.75}
+], C.recessions);
+for(const k of DATA.kpis){
+  const el=document.querySelector(`[data-spark="${k.key}"]`);
+  if(el && k.history && k.history.length) lineChart(el, [{pts:k.history,color:"#C34A32",width:1.8}], C.recessions);
+}
+const W=DATA.equity_windows||[];
+$("windows").innerHTML = "<strong>과거 구간 · 주식 반응</strong><br><table><thead><tr><th>Window</th><th>S&P500</th><th>Nasdaq</th></tr></thead><tbody>" +
+  W.map(w=>`<tr><td>${w.window}<br><span style="color:#6C6A64">${w.start}–${w.end}</span></td><td>${w.spx_pct==null?"—":fmt(w.spx_pct,1)+"%"}</td><td>${w.nasdaq_pct==null?"—":fmt(w.nasdaq_pct,1)+"%"}</td></tr>`).join("") +
+  "</tbody></table>";
+const D=H.dispersion||{};
+$("modelnote").innerHTML = `<strong>Term Premium은 관측값이 아닙니다.</strong> ${DATA.notes.term_premium} 모델 분산 ${D.range==null?"—":fmt(D.range,2)+"pp"} · uncertainty ${D.uncertainty||"—"}. ${DATA.notes.ai_capex} ${DATA.notes.no_estimates}`;
+
+(function(){
+  if(window.parent===window) return;
+  let last=0;
+  const post=()=>{
+    const h=Math.ceil(document.documentElement.scrollHeight);
+    if(Math.abs(h-last)>8){last=h; window.parent.postMessage({type:"gl-height",height:h},"*");}
+  };
+  window.addEventListener("load",post);
+  window.addEventListener("resize",post);
+  if(window.ResizeObserver) new ResizeObserver(post).observe(document.body);
+  setInterval(post,1200); post();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+# 이 파일은 .github/workflows/update.yml 경로에 저장하세요
+name: US TRRS 자동 갱신
+
+on:
+  schedule:
+    - cron: "0 9 1,16 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: [self-hosted, macOS, gl-monitor]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 의존성 확인
+        env:
+          PATH: /usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin
+        run: /usr/local/bin/python3 -m pip install --user -r requirements.txt
+
+      - name: 단위 테스트
+        env:
+          PATH: /usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin
+        run: /usr/local/bin/python3 -m unittest discover -s tests -v
+
+      - name: 데이터 갱신 및 빌드
+        env:
+          PATH: /usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin
+        run: |
+          CERTFILE=$(/usr/local/bin/python3 -c 'import certifi; print(certifi.where())')
+          SSL_CERT_FILE="$CERTFILE" /usr/local/bin/python3 build.py --out dist
+
+      - name: 변경사항 커밋
+        run: |
+          git config user.name  "trrs-bot"
+          git config user.email "trrs-bot@users.noreply.github.com"
+          git add dist
+          if git diff --staged --quiet; then
+            echo "변경 없음 — 신규 데이터가 아직 발표되지 않았습니다"
+          else
+            git commit -m "chore: TRRS 데이터 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git push
+          fi
+
+      - name: GitHub Pages 업로드
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

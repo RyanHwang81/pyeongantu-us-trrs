@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "final_weights": {
+    "rate": 0.3,
+    "term_premium": 0.4,
+    "fiscal": 0.3
+  },
+  "subscore_weights": {
+    "rate": {
+      "yield_level": 0.2,
+      "real_yield": 0.35,
+      "yield_momentum": 0.2,
+      "curve_structure": 0.1,
+      "fed_expectation": 0.15
+    },
+    "term_premium": {
+      "level": 0.35,
+      "change_3m": 0.25,
+      "acceleration": 0.15,
+      "move": 0.15,
+      "model_dispersion": 0.1
+    },
+    "fiscal": {
+      "deficit_gdp": 0.2,
+      "interest_burden": 0.2,
+      "issuance_pressure": 0.25,
+      "auction_stress": 0.2,
+      "foreign_demand": 0.15
+    }
+  },
+  "risk_bands": [
+    {"min": 0, "max": 25, "label": "NORMAL", "color": "green"},
+    {"min": 25, "max": 45, "label": "ELEVATED", "color": "yellow"},
+    {"min": 45, "max": 65, "label": "WARNING", "color": "yellow"},
+    {"min": 65, "max": 80, "label": "STRESS", "color": "orange"},
+    {"min": 80, "max": 101, "label": "REGIME BREAK RISK", "color": "red"}
+  ],
+  "term_premium_zones_pct": [
+    {"min": -100, "max": 0.75, "label": "NORMAL"},
+    {"min": 0.75, "max": 1.25, "label": "ELEVATED"},
+    {"min": 1.25, "max": 1.5, "label": "WARNING"},
+    {"min": 1.5, "max": 1.75, "label": "STRESS"},
+    {"min": 1.75, "max": 2.0, "label": "SEVERE STRESS"},
+    {"min": 2.0, "max": 100, "label": "REGIME CHANGE RISK"}
+  ],
+  "acceleration_override": {
+    "calibration_percentile_min": 70,
+    "rules": [
+      {"change_3m_bp": 30, "minimum_score": 25, "minimum_band": "ELEVATED"},
+      {"change_3m_bp": 50, "minimum_score": 45, "minimum_band": "WARNING"},
+      {"change_3m_bp": 75, "minimum_score": 65, "minimum_band": "STRESS"}
+    ]
+  },
+  "event_definitions": {
+    "change_3m_bp_floor": 50,
+    "change_3m_percentile": 90,
+    "zscore_threshold": 1.5,
+    "level_percentile": 75,
+    "cooldown_trading_days": 63
+  },
+  "backtest_horizons_trading_days": {
+    "1W": 5,
+    "1M": 21,
+    "3M": 63,
+    "6M": 126,
+    "12M": 252
+  },
+  "stale_days": {
+    "daily": 14,
+    "weekly": 21,
+    "monthly": 125,
+    "quarterly": 250,
+    "annual": 550,
+    "publication": 550
+  }
+}
