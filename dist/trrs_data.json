@@ -1,6 +1,6 @@
 {
   "meta": {
-    "built_at": "2026-09-15T01:22:39Z",
+    "built_at": "2026-09-15T03:11:37Z",
     "as_of": "2026-09-11",
     "as_of_label": "2026-09-11",
     "data_confidence": "MEDIUM",
@@ -68,7 +68,7 @@
       "latest_period": "2026-09-11",
       "latest_value": 4.96,
       "previous_value": 4.75,
-      "update_time": "2026-09-15T01:22:37Z",
+      "update_time": "2026-09-15T03:11:35Z",
       "historical_range": {
         "start": "1962-01-31",
         "end": "2026-09-11",
@@ -1392,7 +1392,7 @@
       "latest_period": "2026-09-11",
       "latest_value": 2.6,
       "previous_value": 2.44,
-      "update_time": "2026-09-15T01:22:37Z",
+      "update_time": "2026-09-15T03:11:35Z",
       "historical_range": {
         "start": "2003-01-31",
         "end": "2026-09-11",
@@ -2572,7 +2572,7 @@
       "latest_period": "2026-09-14",
       "latest_value": 2.37,
       "previous_value": 2.31,
-      "update_time": "2026-09-15T01:22:37Z",
+      "update_time": "2026-09-15T03:11:35Z",
       "historical_range": {
         "start": "2003-01-31",
         "end": "2026-09-14",
@@ -3752,7 +3752,7 @@
       "latest_period": "2026-08-01",
       "latest_value": 3.63,
       "previous_value": 3.63,
-      "update_time": "2026-09-15T01:22:37Z",
+      "update_time": "2026-09-15T03:11:35Z",
       "historical_range": {
         "start": "1954-07-01",
         "end": "2026-08-01",
@@ -5072,7 +5072,7 @@
       "latest_period": "2026-09-11",
       "latest_value": 0.7175122091586639,
       "previous_value": 0.762512945770764,
-      "update_time": "2026-09-15T01:22:37Z",
+      "update_time": "2026-09-15T03:11:35Z",
       "historical_range": {
         "start": "1961-06-30",
         "end": "2026-09-11",
@@ -6396,7 +6396,7 @@
       "latest_period": "2026-09-14",
       "latest_value": 0.86,
       "previous_value": 0.84,
-      "update_time": "2026-09-15T01:22:37Z",
+      "update_time": "2026-09-15T03:11:36Z",
       "historical_range": {
         "start": "1982-01-29",
         "end": "2026-09-14",
@@ -7720,7 +7720,7 @@
       "latest_period": "2025-09-30",
       "latest_value": 5.76906,
       "previous_value": 6.19625,
-      "update_time": "2026-09-15T01:22:37Z",
+      "update_time": "2026-09-15T03:11:36Z",
       "historical_range": {
         "start": "1929-09-30",
         "end": "2025-09-30",
@@ -7864,7 +7864,7 @@
       "latest_period": "2026-09-11",
       "latest_value": 7.352228011059014,
       "previous_value": 7.372844414705071,
-      "update_time": "2026-09-15T01:22:38Z",
+      "update_time": "2026-09-15T03:11:36Z",
       "historical_range": {
         "start": "2006-01-30",
         "end": "2026-09-11",
@@ -28628,7 +28628,7 @@
       "latest_period": "2026-09-11",
       "latest_value": 0.6798681327773196,
       "previous_value": 0.6980787192753416,
-      "update_time": "2026-09-15T01:22:38Z",
+      "update_time": "2026-09-15T03:11:36Z",
       "historical_range": {
         "start": "1962-03-30",
         "end": "2026-09-11",
@@ -29952,7 +29952,7 @@
       "latest_period": "2026-09-11",
       "latest_value": 2.65,
       "previous_value": 2.63,
-      "update_time": "2026-09-15T01:22:38Z",
+      "update_time": "2026-09-15T03:11:36Z",
       "historical_range": {
         "start": "2023-09-30",
         "end": "2026-09-11",
